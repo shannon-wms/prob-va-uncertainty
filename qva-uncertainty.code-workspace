@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../qva-unc-experiments"
+		},
+		{
+			"path": "../qva-uncertainty"
+		},
+		{
+			"path": "../notebooks"
+		}
+	],
+	"settings": {
+		"r.lsp.promptToInstall": false
+	}
+}
