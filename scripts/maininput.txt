@@ -1,0 +1,13 @@
+! Minimal (non-working) example illustrating blocks in NAME input file that must be altered to work with ph_sampling.run_name_from_csv and generate output concentration results.
+
+Output Options:
+Folder
+%outputdir%
+
+Input Files:
+File Names
+%inputdir%/ex_sources.txt
+
+Output Requirements - Fields:
+Quantity,           Source,       
+Air Concentration,  %sourcelabel%, 

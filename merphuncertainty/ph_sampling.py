@@ -58,8 +58,7 @@ class VolcanicNAME(object):
             ensemble (bool): Whether ensemble or deterministic met is used.
             output_dir (str): Directory where NAME outputs are stored.
             esp_csv (str): csv file containing eruption source parameters.
-            maininput_file (str, optional): File within output_dir containing 
-            main NAME inputs. Defaults to "maininput.txt".
+            maininput_file (str, optional): File within output_dir containing main NAME inputs. Defaults to "maininput.txt".
         """
         self.name = name
         self.ensemble = ensemble
@@ -76,8 +75,7 @@ class VolcanicNAME(object):
             
             
     def check_run_finished(self):
-        """Check whether NAME run(s) are finished so that post-processing can
-        be done.
+        """Check whether NAME run(s) are finished so that post-processing can be done.
 
         Returns:
             bool: Indication of whether NAME run(s) have finished.
@@ -116,12 +114,10 @@ class VolcanicNAME(object):
         return self.run_finished
 
     def get_ash_cube_list(self, member: int = None, **kwargs):
-        """Construct a CubeList where each cube is the ash concentration output 
-        for a different source, as specified in the esp_csv.
+        """Construct a CubeList where each cube is the ash concentration output for a different source, as specified in the esp_csv.
 
         Args:
-            member (int, optional): If ensemble met, which member to obtain ash
-            cubes for. If None, obtains list for all ensemble members. Defaults 
+            member (int, optional): If ensemble met, which member to obtain ash cubes for. If None, obtains list for all ensemble members. Defaults 
             to None.
 
         Returns:
@@ -199,9 +195,7 @@ def _rescale_cube_list(cube_list: CubeList,
                        new_mer_gs_ht: float = None,
                        height_diff: float = 0.0, 
                        new_title: str = None):
-    """Rescale all cubes in a list by the same scaling factor, proportional to 
-    their lengths, except the topmost (final) one if correct_top_chunk then 
-    apply a linear correction.
+    """Rescale all cubes in a list by the same scaling factor, proportional to their lengths, except the topmost (final) one if correct_top_chunk then apply a linear correction.
     """
     if not isinstance(cube_list, list):
         cube_list = [cube_list]
@@ -613,7 +607,7 @@ class PHQuadrature(object):
             if n_points is not None:
                 points = np.linspace(self.lower_km, self.upper_km, 
                                      num = n_points + 1)
-            elif workers == -1: # TODO Needs to match no of cpus assigned in job
+            elif workers == -1: 
                 points = np.linspace(self.lower_km, self.upper_km, 
                                      num = cpu_count() + 1)
             elif workers > 1:
@@ -897,6 +891,8 @@ def run_name_from_csv(csv_path: str,
                       input_dir: str,
                       output_dir: str,
                       ensemble: bool,
+                      source_line_no: int,
+                      out_line_no: int,
                       sub_dir: str = None,
                       script_dir: str = None,
                       scr_file: str = None,
@@ -906,43 +902,30 @@ def run_name_from_csv(csv_path: str,
                       print_out: bool = False,
                       return_obj: bool = False,
                       **kwargs):
-    """From a csv file of eruption source parameters, construct and run NAME
-    with separate sources specified by the file. Runs as deterministic (one 
-    NAME run) or an ensemble (number of runs determined by the met data
-    specified in maininput_file).
+    """From a csv file of eruption source parameters, construct and run NAMEwith separate sources specified by the file. Runs as deterministic (one NAME run) or an ensemble (number of runs determined by the met data specified in maininput_file).
 
     Args:
-        csv_path (str): Full path of csv file containing eruption source parameters,
-        e.g. output of posterior_to_csv.
+        csv_path (str): Full path of csv file containing eruption source parameters, e.g. output of posterior_to_csv.
         output_name (str): Name of VolcanicNAME object returned.
-        input_dir (str): Directory containing NAME input files. Must contain a
-        main input file and a source file.
-        output_dir (str): Directory to store NAME outputs. Will be created if 
-        not pre-existing.
-        ensemble (bool): Whether ensemble meteorological data is being used. If 
-        True, runs NAME once per ensemble member (where met is specified in 
-        maininput_file). If False, runs NAME only once with deterministic met.
+        input_dir (str): Directory containing NAME input files. Must contain a main input file and a source file.
+        output_dir (str): Directory to store NAME outputs. Will be created if not pre-existing.
+        ensemble (bool): Whether ensemble meteorological data is being used. If True, runs NAME once per ensemble member (where met is specified in maininput_file). If False, runs NAME only once with deterministic met.
+        source_line_no (int): Line number in maininput_file where source parameters begin.
+        out_line_no (int): Line number in maininput_file where output parameters begin.
         sub_dir (str, optional): Subdirectory of output_dir. Will be created if not pre-existing.
         script_dir (str, optional): Directory containing .scr file for setting up NAME. If None, defauilts to "../NAME_scripts". Defaults to None.
-        scr_file (str, optional): Script (.scr) file within script_dir for 
-        setting up and running NAME. If None, defaults to the relevant file in
-        NAME_scripts. Defaults to None.
-        maininput_file (str, optional): Name of main NAME input file in 
-        script_dir. Defaults to "maininput.txt".
-        source_file (str, optional): Name of NAME source input file in 
-        script_dir. Defaults to "sources.txt".
-        bash_file (str, optional): Name of bash file for running NAME in 
-        script_dir. Defaults to "volcanic_ash.sh".
-        print_out (bool, optional): Whether to print to console. Defaults to 
-        False.
+        scr_file (str, optional): Script (.scr) file within script_dir for setting up and running NAME. If None, defaults to the relevant file in NAME_scripts. Defaults to None.
+        maininput_file (str, optional): Name of main NAME input file in script_dir. See "maininput.txt" for example setup. Defaults to "maininput.txt".
+        source_file (str, optional): Name of NAME source input file in script_dir. See "scripts/sources.txt" for example setup. Defaults to "sources.txt".
+        bash_file (str, optional): Name of bash file for running NAME in script_dir. Defaults to "volcanic_ash.sh".
+        print_out (bool, optional): Whether to print to console. Defaults to False.
         return_obj (bool, optional): Whether to return VolcanicNAME object. Defaults to False.
 
     Raises:
         OSError: File script_dir/scr_file does not exist.
 
     Returns:
-        VolcanicNAME: Object containing information on NAME run(s) and their 
-        outputs.
+        VolcanicNAME: Object containing information on NAME run(s) and their outputs.
     """
     
     if script_dir is None:
@@ -965,7 +948,9 @@ def run_name_from_csv(csv_path: str,
         f"export maininputfile={maininput_file};", 
         f"export sourcefile={source_file};",
         f"export bashfile={bash_file};", 
-        f"export csv={csv_path};"
+        f"export csv={csv_path};",
+        f"export sourcelineno={source_line_no};",
+        f"export outlineno={out_line_no};"
     ]
     
     if sub_dir is not None:

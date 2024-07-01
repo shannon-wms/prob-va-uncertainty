@@ -65,24 +65,15 @@ def list_dicts_to_csv(dicts_list: str, csv_path: str, overwrite: bool = False):
 def posterior_to_csv(qhstats: QHStats, plume_height: tuple, 
                      csv_path: str = None, volcano_height: float = 0.0, 
                      uniform_release: bool = True, labels: tuple = None):
-    """Use QHStats object from MERPH to generate eruption source parameters for 
-    each plume height sample, including information on the release height, MER, 
-    and parameters of the t-distribution of log-MER.
+    """Use QHStats object from MERPH to generate eruption source parameters for each plume height sample, including information on the release height, MER, and parameters of the t-distribution of log-MER.
 
     Args:
         qhstats (merph.stats.QHStats): QHStats object initialised in merph.
-        plume_height (tuple): Plume height samples, in km above vent 
-        level (m a.s.l.).
-        csv_path (str, optional): Path of csv file for data to be saved to. If 
-        None, data is not saved as csv and returned as a list of dictionaries. 
-        Defaults to None.
-        volcano_height (float, optional): Vent height, in m a.s.l. Defaults to 
-        0.0.
-        uniform_release (bool, optional): Whether volcanic ash is released 
-        uniformly between the vent and top of plume. If False, ash is released 
-        only from a point at the top of the plume. Defaults to True.
-        labels (tuple, optional): List of labels for each sample. Defaults to 
-        None.
+        plume_height (tuple): Plume height samples, in km above vent level (m a.s.l.).
+        csv_path (str, optional): Path of csv file for data to be saved to. If None, data is not saved as csv and returned as a list of dictionaries. Defaults to None.
+        volcano_height (float, optional): Vent height, in m a.s.l. Defaults to 0.0.
+        uniform_release (bool, optional): Whether volcanic ash is released uniformly between the vent and top of plume. If False, ash is released only from a point at the top of the plume. Defaults to True.
+        labels (tuple, optional): List of labels for each sample. Defaults to None.
 
     Returns:
         list: List of dictionaries containing eruption source parameters.
@@ -124,11 +115,9 @@ def source_params_dict(label: str, min_z: float, max_z: float,
         label (str): Name of source.
         min_z (float): Minimum height of release, in m a.s.l.
         max_z (float): Maximum height of release, in m a.s.l.
-        particles_hr_ht (float): Number of particles released in NAME per hour, 
-        per unit height (m).
+        particles_hr_ht (float): Number of particles released in NAME per hour, per unit height (m).
         mer_gs (float, optional): Mass released from source in grams per second.
-        mer_gs_ht (float, optional): Mass released from source in grams per 
-        second per unit height (m).
+        mer_gs_ht (float, optional): Mass released from source in grams per second per unit height (m).
 
     Raises:
         ValueError: Neither mer_gs nor mer_gs_ht provided.

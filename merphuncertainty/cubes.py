@@ -35,16 +35,11 @@ def get_cube(dir: str,
     Args:
         dir (str): The directory in which NAME output files are located.
         file_root (str): A text string common to all files to be loaded. Defaults to "Fields_grid99*".
-        field_options (dict, optional): Dictionary containing information 
-        about columns to be loaded. Defaults to None.
-        z_level (list, optional): List of flight levels to constrain by.
-        Defaults to None.
-        time_inds: (list, optional): Time constraint, specified as a range 
-        between 0 and the dimension of time. Defaults to None.
-        lat_minmax: (tuple, optional): Latitude constraint. Defaults to 
-        (30.0, 80.0).
-        lon_minmax: (tuple, optional): Longitude constraint. Defaults to 
-        (-40.0, 40.0).
+        field_options (dict, optional): Dictionary containing information about columns to be loaded. Defaults to None.
+        z_level (list, optional): List of flight levels to constrain by. Defaults to None.
+        time_inds: (list, optional): Time constraint, specified as a range between 0 and the dimension of time. Defaults to None.
+        lat_minmax: (tuple, optional): Latitude constraint. Defaults to (30.0, 80.0).
+        lon_minmax: (tuple, optional): Longitude constraint. Defaults to (-40.0, 40.0).
         callback (callable, optional): A function to add/remove metadata from the cube in iris.load_cube(). Must have signature (cube, field, filename).
 
     Returns:
@@ -87,14 +82,10 @@ def constrain_cube(cube: Cube,
 
     Args:
         cube (Cube): Iris cube.
-        z_level (list, optional): List of flight levels to constrain by.
-        Defaults to None.
-        time_inds: (list, optional): Time constraint, specified as a range 
-        between 0 and the dimension of time. Defaults to None.
-        lat_minmax: (tuple, optional): Latitude constraint. Defaults to 
-        (30.0, 80.0).
-        lon_minmax: (tuple, optional): Longitude constraint. Defaults to 
-        (-40.0, 40.0).
+        z_level (list, optional): List of flight levels to constrain by. Defaults to None.
+        time_inds: (list, optional): Time constraint, specified as a range between 0 and the dimension of time. Defaults to None.
+        lat_minmax: (tuple, optional): Latitude constraint. Defaults to (30.0, 80.0).
+        lon_minmax: (tuple, optional): Longitude constraint. Defaults to (-40.0, 40.0).
 
     Returns:
         Cube: Constrained cube.
@@ -205,41 +196,26 @@ def get_prob_cube(dir: str,
                   verbose: bool = True, 
                   distribution: rv_continuous = t,
                   **kwargs):
-    """Evaluate exceedance probabilities of an ensemble of NAME runs, using a t-
-    distribution for the log-ash concentration, and also evaluate percentiles.
+    """Evaluate exceedance probabilities of an ensemble of NAME runs, using a t-distribution for the log-ash concentration, and also evaluate percentiles.
 
     Args:
         dir (str): Directory of NAME ensemble member outputs, where each subdirectory begins with "member".
-        df (int): Degrees of freedom of t-distribution for computing
-        exceedance probabilities.
+        df (int): Degrees of freedom of t-distribution for computing exceedance probabilities.
         sigma (float): Scale of t-distribution.
         h_km (float, optional): Plume height in km a.s.l. Defaults to None.
-        thresholds (tuple, optional): List of ash concentration thresholds whose
-        exceedance probabilities are to be evaluated.. Defaults to 
-        (2E-4, 2E-3, 5E-3, 1E-2).
-        percentiles (bool, optional): Whether to compute percentile cube. 
-        Defaults to False.
-        p_points (tuple, optional): Percentile points to be evaluated, if 
-        percentiles is True. Defaults to (0.05, 0.5, 0.95).
-        ppf_interval (tuple, optional): Initial estimate for the range of the 
-        percentiles of the log-concentration distribution. Assumes percentile
-        belongs to one of the endpoints if initial guess is not inside of this 
-        interval. Defaults to (-6.0, 1.0).
-        return_cubes (bool, optional): Whether to return cubes as a CubeList. 
-        Defaults to True.
-        save_excprob_members (bool, optional): Whether to save exceedance 
-        probability cubes as netCDF. Defaults to False.
-        save_ppf_members (bool, optional): Whether to save percentile cubes as
-        netCDF, if calculated. Defaults to False.
-        excprob_file (str, optional): Name of file for exceedance probability 
-        cubes to be saved to. Defaults to None.
-        ppf_file (str, optional): Name of file for percentile cubes to be 
-        saved to. Defaults to None.
+        thresholds (tuple, optional): List of ash concentration thresholds whose exceedance probabilities are to be evaluated. Defaults to (2E-4, 2E-3, 5E-3, 1E-2).
+        percentiles (bool, optional): Whether to compute percentile cube. Defaults to False.
+        p_points (tuple, optional): Percentile points to be evaluated, if percentiles is True. Defaults to (0.05, 0.5, 0.95).
+        ppf_interval (tuple, optional): Initial estimate for the range of the percentiles of the log-concentration distribution. Assumes percentile belongs to one of the endpoints if initial guess is not inside of this interval. Defaults to (-6.0, 1.0).
+        return_cubes (bool, optional): Whether to return cubes as a CubeList. Defaults to True.
+        save_excprob_members (bool, optional): Whether to save exceedance probability cubes as netCDF. Defaults to False.
+        save_ppf_members (bool, optional): Whether to save percentile cubes as netCDF, if calculated. Defaults to False.
+        excprob_file (str, optional): Name of file for exceedance probability cubes to be saved to. Defaults to None.
+        ppf_file (str, optional): Name of file for percentile cubes to be saved to. Defaults to None.
         verbose (bool, optional): Whether to print to console. Defaults to True.
 
     Returns:
-        list: CubeList containing exceedance probabilities, and CubeList of 
-        percentiles if also evaluated.
+        list: CubeList containing exceedance probabilities, and CubeList of percentiles if also evaluated.
     """
     member_dirs = tuple(f.path for f in os.scandir(dir) if f.is_dir() 
                         and f.name.startswith("member"))
@@ -337,13 +313,7 @@ def get_prob_cube(dir: str,
     if return_cubes:
         return out
 
-def get_t_prob_cube(dir: str, 
-                    df: int, 
-                    sigma: tuple,
-                    **kwargs):
-    get_prob_cube(dir, df = df, scale = sigma, **kwargs)
 
-# TODO Remove ?
 def avg_prob_cubes(work_dir: str, 
                    esp_csv: str = None,
                    df: int = None, 
@@ -354,34 +324,25 @@ def avg_prob_cubes(work_dir: str,
                    percentiles = False, 
                    verbose = True, 
                    **kwargs):
-    """For a set of plume height samples, average the exceedance probabilities 
-    and evaluate the sample variance of these probability estimates.
+    """For a set of plume height samples, average the exceedance probabilities and evaluate the sample variance of these probability estimates.
 
     Args:
-        work_dir (str): Output directory containing NAME outputs. Subdirectories 
-        must begin with "sample".
-        esp_csv (str, optional): Path of csv file from which to obtain eruption
-        source parameters and t-distribution parameters. If not specified, these
+        work_dir (str): Output directory containing NAME outputs. Subdirectories must begin with "sample".
+        esp_csv (str, optional): Path of csv file from which to obtain eruption source parameters and t-distribution parameters. If not specified, these
         must be provided separately. Defaults to None.
-        df (int, optional): Degrees of freedom of t-distribution for computing
-        exceedance probabilities. Defaults to None.
+        df (int, optional): Degrees of freedom of t-distribution for computing exceedance probabilities. Defaults to None.
         sigma (tuple, optional): Scale of t-distribution.. Defaults to None.
-        h_km (tuple, optional): List of plume height samples, in km a.s.l. 
-        Defaults to None.
-        sample_var (bool, optional): Whether to compute sample variance. 
-        Defaults to False.
-        save_cubes (bool, optional): Whether to save cubes to netCDF. Defaults 
-        to False.
-        percentiles (bool, optional): Whether to compute percentile cube. 
-        Defaults to True.
+        h_km (tuple, optional): List of plume height samples, in km a.s.l. Defaults to None.
+        sample_var (bool, optional): Whether to compute sample variance. Defaults to False.
+        save_cubes (bool, optional): Whether to save cubes to netCDF. Defaults to False.
+        percentiles (bool, optional): Whether to compute percentile cube. Defaults to True.
         verbose (bool, optional): Whether to print to console. Defaults to True.
 
     Raises:
         ValueError: t-distribution not specified properly.
 
     Returns:
-        CubeList: Exceedance probability estimates and associated sample 
-        variances.
+        CubeList: Exceedance probability estimates and associated sample variances.
     """
     # List subdirectories to obtain samples
     sample_dirs = tuple(f.path for f in os.scandir(work_dir) if f.is_dir() 
@@ -474,10 +435,8 @@ def avg_prob_cubes(work_dir: str,
         return mean_prob_cube
 
 
-# TODO Remove ?
 def get_rel_var(prob_cube: Cube, svar_cube: Cube):
-    """Compute relative variance (sample variance / square of probability) given
-    exceedance probability estimate cube and sample variance cube.
+    """Compute relative variance (sample variance / square of probability) given exceedance probability estimate cube and sample variance cube.
 
     Args:
         prob_cube (Cube): Cube containing exceedance probability estimates.
@@ -504,8 +463,7 @@ def get_ppf_cube(log_cube: Cube,
                  tol: float = 1E-2,
                  distribution: rv_continuous = t,
                  **kwargs):
-    """Evaluate percentiles of log-ash concentration distribution via bisection
-    (root-finding) method.
+    """Evaluate percentiles of log-ash concentration distribution via bisection (root-finding) method.
 
     Args:
         log_cube (Cube): Log of ash concentration cube.
@@ -711,8 +669,7 @@ def update_cube_attrs_from_dict(cube: Cube, attrs: dict):
 
 
 def update_cube_attrs_from_data(cube: Cube, esp_data: pd.DataFrame, i: int):
-    """Update title, MER and release height attributes of a cube according to 
-    dataframe of eruption source parameters.
+    """Update title, MER and release height attributes of a cube according to dataframe of eruption source parameters.
 
     Args:
         cube (Cube): Cube to update.

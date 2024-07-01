@@ -1,0 +1,5 @@
+! Minimal (non-working) example illustrating source input file
+
+Sources:
+Name,           
+%sourcelabel%,  
