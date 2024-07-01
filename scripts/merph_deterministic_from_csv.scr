@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Script to set up ensemble NAME runs with different plume height and MER.
+# Given a csv containing the median of the posterior MER for each plume height, run NAME with these parameters for each ensemble member.
+# Results in 18 * (number of samples) runs.
+
+# Directories
+scriptDIR=/home/h04/swilliam/OneDrive/qva-project/code/NAME_scripts
+inputDIR=/home/h04/swilliam/OneDrive/qva-project/code/NAME_scripts/Grimsvotn_20220610_deterministic
+outDIR=/data/users/swilliam/NAME_Out/Grimsvotn_20220610_ph_test
+mkdir ${outDIR}
+
+# Input files
+maininputfile=maininput.txt
+sourcefile=sources.txt
+bashfile=volcanic_ash.sh
+
+# csv file containing height and MER values
+merphcsv=/home/h04/swilliam/OneDrive/qva-project/notebooks/csv/grimsvotn_ph_test.csv
+
+lab_col="label"
+mer_col="Q (g hr)"
+z_col="Z (m)"
+dz_col="dZ (m)"
+
+loc_lab_col=$(head -1 "$merphcsv" | tr ',' '\n' | nl |grep -w "$lab_col" | tr -d " " | awk -F " " '{print $1}')
+loc_mer_col=$(head -1 "$merphcsv" | tr ',' '\n' | nl |grep -w "$mer_col" | tr -d " " | awk -F " " '{print $1}')
+loc_z_col=$(head -1 "$merphcsv" | tr ',' '\n' | nl |grep -w "$z_col" | tr -d " " | awk -F " " '{print $1}')
+loc_dz_col=$(head -1 "$merphcsv" | tr ',' '\n' | nl |grep -w "$dz_col" | tr -d " " | awk -F " " '{print $1}')
+
+echo "Reading eruption source parameters from $merphcsv"
+echo "Label column: $lab_col (column no. $loc_lab_col)"
+echo "MER column: $mer_col (column no. $loc_mer_col)"
+echo "Release height (Z) column: $z_col (column no. $loc_z_col)"
+echo "Release range (dZ) column: $dz_col (column no. $loc_dz_col)"
+echo ""
+
+i=0
+while IFS="," read -r label sourcestrength sourceheight sourcerange
+do
+  echo "Sample $i:"
+  echo "Label ${label}"
+
+  # Generate Working Directory
+  heightDIR=${outDIR}/${label}
+  mkdir ${heightDIR}
+  echo "Directory ${heightDIR} created."
+
+  echo "MER: ${sourcestrength} g hr"
+  echo "Release height: ${sourceheight} m"
+  echo "Release range: ${sourcerange} m"
+  echo ""
+
+  # Copy over scripts and input files
+  cp -r ${inputDIR}/. ${heightDIR}/
+  cp ${scriptDIR}/${bashfile} ${heightDIR}/${bashfile}
+
+  # Set variables in input files
+  sed -i "s%\%outputdir\%%${heightDIR}%I" ${heightDIR}/${maininputfile}
+  sed -i "s%\%inputdir\%%${heightDIR}%I" ${heightDIR}/${maininputfile}
+  sed -i "s%\%sourcerange\%%${sourcerange}%I" ${heightDIR}/${sourcefile}
+  sed -i "s%\%sourceheight\%%${sourceheight}%I" ${heightDIR}/${sourcefile}
+  sed -i "s%\%sourcestrength\%%${sourcestrength}%I" ${heightDIR}/${sourcefile}
+  sed -i "s/\r//g" ${heightDIR}/${sourcefile} # Remove ^M
+
+  # Set variables in bash file
+  sed -i "s%\%maininputfile\%%${maininputfile}%I" ${heightDIR}/${bashfile}
+  sed -i "s%\%outputdir\%%${heightDIR}%I" ${heightDIR}/${bashfile}
+  # Send to SLURM
+  sbatch ${heightDIR}/${bashfile}
+
+  ((++i))
+
+done < <(cut -d "," -f${loc_lab_col},${loc_mer_col},${loc_z_col},${loc_dz_col} ${merphcsv} | tail -n +2)
+

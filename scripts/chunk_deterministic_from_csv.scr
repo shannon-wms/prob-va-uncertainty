@@ -73,6 +73,6 @@ do
   ((++i))
 done < <(cut -d "," -f${loc_lab_col},${loc_mer_col},${loc_z_col},${loc_dz_col},${loc_pt_col} ${csv} | tail -n +2)
 
-# Send to SPICE
+# Send to SLURM
 sbatch ${subDIR}/${bashfile}
 
