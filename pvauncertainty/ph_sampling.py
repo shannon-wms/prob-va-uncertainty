@@ -23,10 +23,10 @@ from itertools import compress
 from scipy.stats import truncnorm, rv_continuous
 from time import time
 
-from merphuncertainty.csv_funs import *
-from merphuncertainty.cubes import *
-from merphuncertainty.utils import sort_member_dirs, set_ivespa_obs
-from merphuncertainty.quadrature import quad_vec
+from pvauncertainty.csv_funs import *
+from pvauncertainty.cubes import *
+from pvauncertainty.utils import sort_member_dirs, set_ivespa_obs
+from pvauncertainty.quadrature import quad_vec
 
 from merph import QHstats
 

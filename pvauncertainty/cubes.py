@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import rv_continuous, t, norm
 from iris.cube import Cube, CubeList
-from merphuncertainty.utils import bisection, mixture_dist
+from pvauncertainty.utils import bisection, mixture_dist
 
 # Avoid "divide by zero encountered in log10" warnings
 import warnings

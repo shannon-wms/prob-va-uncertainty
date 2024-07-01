@@ -25,7 +25,7 @@ import img2pdf
 from iris.cube import Cube, CubeList
 from iris import Constraint
 
-from merphuncertainty.cubes import get_cube, get_log_cube, member_prob_cube
+from pvauncertainty.cubes import get_cube, get_log_cube, member_prob_cube
 
 # Colour maps
 bupu_cmap = cm.get_cmap("brewer_BuPu_09")
