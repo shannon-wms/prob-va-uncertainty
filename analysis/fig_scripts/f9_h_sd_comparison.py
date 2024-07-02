@@ -1,5 +1,6 @@
 from figures import *
-from merphuncertainty.plotting import _get_datestamps, _set_grid, _get_title, _constrain_cube_for_plot
+from pvauncertainty.plotting import _get_datestamps, _set_grid, _constrain_cube_for_plot
+from PIL import Image
 
 sds = [0.5, 1, 2]
 loc = 12
@@ -17,7 +18,7 @@ outer = gridspec.GridSpec(4, 3, wspace = 0.2, hspace = 0.25,
 
 m = 0
 for i, sd in enumerate(sds):
-    file_name = cubes_dir + f"quad_exc_prob_{n_int}_sd{str(sd).replace('.', '_')}.nc"
+    file_name = f"../data/quadrature_results/quad_exc_prob_{n_int}_sd{str(sd).replace('.', '_')}.nc"
     cube = iris.load(file_name)[0]
     for j, fl_index in enumerate(fl_inds):
 
@@ -67,5 +68,23 @@ cbar1 = plt.colorbar(cf, cax = cbaxes1,
 cbar1.ax.set_xlabel("Exceedance Probability", fontsize = 14) 
 cbar1.ax.set_xticklabels(ticklabels)
 
-fig.savefig(fig_dir + "h-sd-comparison.png", format = "pdf",
+fig.savefig(fig_dir + "h-sd-comparison.png", format = "png",
             bbox_inches = "tight")
+
+# resize and combine fig a and b
+im1 = Image.open(fig_dir + "mer-h-jointplot.png")
+width1, height1 = im1.size
+im2 = im1.crop((0, 0, width1-125, height1-20))
+width2, height2 = im2.size
+
+im3 = Image.open(fig_dir + "h-sd-comparison.png")
+width3, height3 = im3.size
+im4 = im3.resize((width2, int(height3 * (width2 / width3))),
+                 Image.Resampling.LANCZOS)
+_, height4 = im4.size
+
+total_height = height2 + height4
+new_im =  Image.new("RGB", (width2, total_height))
+new_im.paste(im2, (0, 0))
+new_im.paste(im4, (0, height2))
+new_im.save(fig_dir + "jointplot-comparison.png")

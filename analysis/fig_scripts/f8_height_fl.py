@@ -14,7 +14,7 @@ for member in range(18):
 
 heights_asl = [10, 12, 14]
 cubes = iris.cube.CubeList([1 - eval_t_cdf(height_asl = h, chunks = chunks) for h in heights_asl])
-quad_cube = iris.load(cubes_dir + "quad_exc_prob_12_sd1.nc")[0]
+quad_cube = iris.load("../data/quadrature_results/quad_exc_prob_12_sd1.nc")[0]
 cubes.append(quad_cube)
 
 time_index = 6

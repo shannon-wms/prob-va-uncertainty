@@ -78,7 +78,7 @@ for i in range(n_members):
     prob_cube = member_prob_cube(
         log_cube, 
         df = df, 
-        sigma = sigma,
+        scale = sigma,
         h_km = height_asl, 
         exceed = True,
         thresholds = thresholds)
@@ -150,11 +150,11 @@ log_cube = log_cube_list.merge_cube()
 log_cube_const, _ = _constrain_cube_for_plot(log_cube, time_index = 6, fl_index = 0)
 
 # save percentile cubes
-ppf_cube = get_ppf_cube(log_cube_const, df, sigma, interval = (-6, 1))
+ppf_cube = get_ppf_cube(log_cube_const, df = df, scale = sigma, interval = (-6, 1))
 iris.save(ppf_cube, "data/ensemble_ppf.nc")
 
 # carry out quadrature analysis
-n_intervals = [1, 2, 4, 6, 12]
+n_intervals = [1, 2, 4, 6, 12, 24]
 sd = [0.5, 1, 2]
 
 for n_int in n_intervals:
@@ -169,7 +169,7 @@ for n_int in n_intervals:
 control_cube = iris.load(cubes_dir + f"quad_exc_prob_24_sd1.nc")[0]
 full_df = pd.DataFrame()
 
-for j, n_int in enumerate(n_intervals):
+for j, n_int in enumerate(n_intervals[:-1]):
     cube = iris.load(cubes_dir + f"quad_exc_prob_{n_int}_sd1.nc")[0]
     for threshold in thresholds:
         control_th_cube = control_cube.extract(iris.Constraint(threshold = lambda cell: cell == threshold))

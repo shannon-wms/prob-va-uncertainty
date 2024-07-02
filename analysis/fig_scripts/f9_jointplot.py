@@ -1,11 +1,10 @@
 from figures import fig_dir
-import sys
 import numpy as np
 import seaborn as sns
 import pandas as pd
 from scipy.stats import t, truncnorm
 import matplotlib.pyplot as plt
-from merphuncertainty.utils import set_ivespa_obs
+from pvauncertainty.utils import set_ivespa_obs
 
 # Set the size of the sample
 size = 10000
@@ -78,5 +77,5 @@ fig.text(0.1, 0.85, "a", horizontalalignment = "left",
 plt.tight_layout()
 plt.show()
 
-fig.savefig(fig_dir + "mer-h-jointplot.png", format = "pdf",
+fig.savefig(fig_dir + "mer-h-jointplot.png", format = "png",
             bbox_inches = "tight")
