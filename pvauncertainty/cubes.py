@@ -201,7 +201,6 @@ def get_prob_cube(dir: str,
     Args:
         dir (str): Directory of NAME ensemble member outputs, where each subdirectory begins with "member".
         df (int): Degrees of freedom of t-distribution for computing exceedance probabilities.
-        sigma (float): Scale of t-distribution.
         h_km (float, optional): Plume height in km a.s.l. Defaults to None.
         thresholds (tuple, optional): List of ash concentration thresholds whose exceedance probabilities are to be evaluated. Defaults to (2E-4, 2E-3, 5E-3, 1E-2).
         percentiles (bool, optional): Whether to compute percentile cube. Defaults to False.
@@ -317,7 +316,7 @@ def get_prob_cube(dir: str,
 def avg_prob_cubes(work_dir: str, 
                    esp_csv: str = None,
                    df: int = None, 
-                   sigma: tuple = None,
+                   scale: tuple = None,
                    h_km: tuple = None, 
                    sample_var: bool = False, 
                    save_cubes: bool = False, 
@@ -331,7 +330,7 @@ def avg_prob_cubes(work_dir: str,
         esp_csv (str, optional): Path of csv file from which to obtain eruption source parameters and t-distribution parameters. If not specified, these
         must be provided separately. Defaults to None.
         df (int, optional): Degrees of freedom of t-distribution for computing exceedance probabilities. Defaults to None.
-        sigma (tuple, optional): Scale of t-distribution.. Defaults to None.
+        scale (tuple, optional): Scale of t-distribution.. Defaults to None.
         h_km (tuple, optional): List of plume height samples, in km a.s.l. Defaults to None.
         sample_var (bool, optional): Whether to compute sample variance. Defaults to False.
         save_cubes (bool, optional): Whether to save cubes to netCDF. Defaults to False.
@@ -356,13 +355,13 @@ def avg_prob_cubes(work_dir: str,
         data = pd.read_csv(esp_csv)
         df = tuple(data["df"])
         h_km = tuple(data["H (km asl)"])
-        sigma = tuple(data["sigma"])
-    elif df is None or h_km is None or sigma is None:
-        raise ValueError("Either esp_csv or all of df, h_km and sigma must "
+        scale = tuple(data["sigma"])
+    elif df is None or h_km is None or scale is None:
+        raise ValueError("Either esp_csv or all of df, h_km and scale must "
                          + "be specified.")
 
-    if not isinstance(sigma, tuple):
-        sigma = tuple(sigma for _ in range(len(h_km)))
+    if not isinstance(scale, tuple):
+        scale = tuple(scale for _ in range(len(h_km)))
 
     for i in range(n_samples):
         if verbose:
@@ -380,7 +379,7 @@ def avg_prob_cubes(work_dir: str,
         # Evaluate conditional exceedance probability for this member        
         output = get_prob_cube(dir = this_dir, 
                                df = df[i], 
-                               sigma = sigma[i], 
+                               scale = scale[i], 
                                h_km = h_km[i], 
                                percentiles = percentiles, 
                                excprob_file = excprob_file, 

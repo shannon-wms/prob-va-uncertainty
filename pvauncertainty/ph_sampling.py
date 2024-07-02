@@ -770,7 +770,7 @@ class PHSamples(object):
             prob_cube = member_prob_cube(
                 log_cube, 
                 df = self.ivespa.df, 
-                sigma = self.ivespa.Sigma[i],
+                scale = self.ivespa.Sigma[i],
                 h_km = height_asl / 1000, 
                 thresholds = thresholds)
 
@@ -1014,7 +1014,7 @@ def eval_t_cdf(height_asl: float, chunks: SourceChunks,
         cdf_cube = member_prob_cube(
             log_cube, 
             df = df, 
-            sigma = sigma,
+            scale = sigma,
             h_km = height_asl, 
             exceed = False,
             thresholds = thresholds)
