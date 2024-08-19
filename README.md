@@ -64,7 +64,7 @@ Contains scripts for post-processing of data and generation of figures for the s
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the BSD 3-Clause License.
 
 ## Contact 
 
