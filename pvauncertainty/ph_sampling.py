@@ -978,7 +978,7 @@ def eval_t_cdf(height_asl: float, chunks: SourceChunks,
     ivespa = set_ivespa_obs(height_avl * 1000, chunks.volcano_height)
 
     # Evaluate MER for this height
-    mer_gs = 10 ** ivespa.mu * 1000
+    mer_gs = 10 ** ivespa.mu[0] * 1000
     mer_gs_ht = mer_gs / (height_avl * 1000)
     
     n_members = chunks.name_output.n_members
@@ -1004,7 +1004,7 @@ def eval_t_cdf(height_asl: float, chunks: SourceChunks,
         cdf_cube = member_prob_cube(
             log_cube, 
             df = ivespa.df, 
-            scale = ivespa.Sigma,
+            scale = ivespa.Sigma[0],
             h_km = height_asl, 
             exceed = False,
             thresholds = thresholds)
