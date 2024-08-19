@@ -10,7 +10,6 @@ Date: 25/09/2023
 import os
 import sys
 import iris
-import merph
 import numpy as np
 import pandas as pd
 import iris.analysis.maths as maths
@@ -25,10 +24,8 @@ from time import time
 
 from pvauncertainty.csv_funs import *
 from pvauncertainty.cubes import *
-from pvauncertainty.utils import sort_member_dirs, set_ivespa_obs
+from pvauncertainty.utils import *
 from pvauncertainty.quadrature import quad_vec
-
-from merph import QHstats
 
 class VolcanicNAME(object):
     name: str
@@ -503,7 +500,9 @@ class PHQuadrature(object):
     upper_km: float
     
     truncnorm: rv_continuous
-    ivespa: QHstats
+
+    mu: np.ndarray
+    Sigma: np.ndarray
     
     exc_probs: iris.cube.Cube
 
@@ -547,10 +546,6 @@ class PHQuadrature(object):
         a = (self.lower_km - loc) / scale
         b = (self.upper_km - loc) / scale
         self.truncnorm = truncnorm(a, b, loc = loc, scale = scale)
-
-        self.ivespa = merph.IVESPA
-        self.ivespa.set_vars(xvar = "H", yvar = "Q")
-        self.ivespa.mle(plot = False)
 
     
     def _eval_cdf(self, 
@@ -657,8 +652,6 @@ class PHSamples(object):
     
     chunks: SourceChunks
     
-    ivespa: QHstats
-    
     sample_heights: list
     n_samples: int
     
@@ -718,7 +711,7 @@ class PHSamples(object):
         self.sample_heights = sample_heights
         self.n_samples = len(self.sample_heights)
         self.ivespa = set_ivespa_obs(self.sample_heights, 
-                                     self.chunks.volcano_height)
+                                             self.chunks.volcano_height)
         
     def get_member_probs(
         self, 
@@ -749,7 +742,7 @@ class PHSamples(object):
         for i in range(self.n_samples):
             # Get plume height and MER
             height_asl = self.sample_heights[i]
-            mer_gs = 10 ** self.ivespa.mu[i] * 1000
+            mer_gs = 10 ** self.mu[i] * 1000
             mer_gs_ht = mer_gs / (height_asl - self.chunks.volcano_height)
             
             rescaled_cube = reconstruct_cube_from_list(
@@ -769,8 +762,8 @@ class PHSamples(object):
             # Evaluate exceedance probability cube
             prob_cube = member_prob_cube(
                 log_cube, 
-                df = self.ivespa.df, 
-                scale = self.ivespa.Sigma[i],
+                df = df, 
+                scale = self.Sigma[i],
                 h_km = height_asl / 1000, 
                 thresholds = thresholds)
 
@@ -976,19 +969,16 @@ def run_name_from_csv(csv_path: str,
 def eval_t_cdf(height_asl: float, chunks: SourceChunks,
                thresholds: tuple = (0.2E-3, 2E-3, 5E-3, 10E-3)):
     # Heights in km asl to avl for getting params of t-dist
-    if chunks.volcano_height > 0.0: # Heights in km asl to avl
+    if chunks.volcano_height > 0.0:         
         height_avl = height_asl - (chunks.volcano_height / 1000)
     else:
         height_avl = height_asl
         
     # Get params from MERPH model
     ivespa = set_ivespa_obs(height_avl * 1000, chunks.volcano_height)
-    df = ivespa.df
-    mu = ivespa.mu[0]
-    sigma = ivespa.Sigma[0]
 
     # Evaluate MER for this height
-    mer_gs = 10 ** mu * 1000
+    mer_gs = 10 ** ivespa.mu * 1000
     mer_gs_ht = mer_gs / (height_avl * 1000)
     
     n_members = chunks.name_output.n_members
@@ -1013,8 +1003,8 @@ def eval_t_cdf(height_asl: float, chunks: SourceChunks,
         # Evaluate exceedance probability cube
         cdf_cube = member_prob_cube(
             log_cube, 
-            df = df, 
-            scale = sigma,
+            df = ivespa.df, 
+            scale = ivespa.Sigma,
             h_km = height_asl, 
             exceed = False,
             thresholds = thresholds)

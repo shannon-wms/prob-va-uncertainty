@@ -9,7 +9,7 @@ Date: 25/09/2023
 import os
 import csv
 import numpy as np
-from merph.stats import QHStats
+from pvauncertainty.utils import *
 
 def list_dicts_to_csv(dicts_list: str, csv_path: str, overwrite: bool = False):
     """Given a list of dictionaries, saves the data as .csv in tidy format. 
@@ -62,10 +62,10 @@ def list_dicts_to_csv(dicts_list: str, csv_path: str, overwrite: bool = False):
                         continue
                 break
 
-def posterior_to_csv(qhstats: QHStats, plume_height: tuple, 
+def posterior_to_csv(ivespa: Ivespa, plume_height: tuple, 
                      csv_path: str = None, volcano_height: float = 0.0, 
                      uniform_release: bool = True, labels: tuple = None):
-    """Use QHStats object from MERPH to generate eruption source parameters for each plume height sample, including information on the release height, MER, and parameters of the t-distribution of log-MER.
+    """Generate eruption source parameters for each plume height sample, including information on the release height, MER, and parameters of the t-distribution of log-MER.
 
     Args:
         qhstats (merph.stats.QHStats): QHStats object initialised in merph.
@@ -83,11 +83,11 @@ def posterior_to_csv(qhstats: QHStats, plume_height: tuple,
                      
     dicts = [{"label": "sample_{}".format(i) if labels is None else labels[i],
               "H (km asl)": plume_height[i] / 1000,
-              "mu": qhstats.mu[i],
-              "sigma": qhstats.Sigma[i],
-              "df": qhstats.df,
-              "Q (g s)": (10 ** qhstats.mu[i] * 1000),
-              "Q (g hr)": (10 ** qhstats.mu[i] * 1000 * (60 ** 2))} 
+              "mu": mu[i],
+              "sigma": Sigma[i],
+              "df": df,
+              "Q (g s)": (10 ** mu[i] * 1000),
+              "Q (g hr)": (10 ** mu[i] * 1000 * (60 ** 2))} 
              for i in range(len(plume_height))]
     
     if uniform_release:

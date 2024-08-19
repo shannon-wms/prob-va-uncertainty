@@ -8,7 +8,6 @@ Date: 25/09/2023
 
 import os
 import numpy as np
-import merph
 from scipy.stats import t, rv_continuous
 
 def mixture_dist(x: float, locs: list, scales: list, distribution: rv_continuous = t, 
@@ -91,9 +90,17 @@ def bisection(interval: list, fun, c: float = 0.0,
             
     print("Convergence not reached. Increase n_iter.")
     return rt
+
+class Ivespa:
+
+    def __init__(self):
+        self.beta_vec = np.array([2.82541738, 3.54169211])
+        self.sigma2 = 0.5896221362244476
+        self.matV = np.array([[ 0.07143395, -0.07353302], [-0.07353302,  0.08482847]])
+        self.df = 128    
     
 def set_ivespa_obs(heights: list, volcano_height: float = 0.0):
-    """Initialise merph.IVESPA object and set observations to obtain parameters.
+    """Initialise Bayesian model with IVESPA data and set observations to obtain parameters.
 
     Args:
         heights (list): List of plume heights, in m a.s.l.
@@ -103,15 +110,20 @@ def set_ivespa_obs(heights: list, volcano_height: float = 0.0):
     if not isinstance(heights, list):
         heights = [heights]
     
-    ivespa = merph.IVESPA
-    ivespa.set_vars(xvar = "H", yvar = "Q")
-    ivespa.mle(plot = False)
-    
-    # Convert from m to km
+    # convert from m to km asl
     heights_km_avl = [(h - volcano_height) / 1000 for h in heights]
-    ivespa.set_obs(heights_km_avl)
-    
-    return(ivespa)
+
+    Xp = np.ones([np.size(heights_km_avl), 2]) 
+    Xp[:, 1] = heights_km_avl
+
+    ivespa = Ivespa()
+
+    ivespa.mu = np.matmul(Xp, ivespa.beta_vec)
+    Id = np.identity(np.size(heights_km_avl), dtype = np.float64) 
+    Sigma2 = ivespa.sigma2 * (Id + np.matmul(np.matmul(Xp, ivespa.matV), Xp.T)) 
+    ivespa.Sigma = np.sqrt(np.diag(Sigma2))
+
+    return ivespa
 
 def sort_member_dirs(name_output_dir: str):
     """Sort NAME ensemble member output directories into ascending order.

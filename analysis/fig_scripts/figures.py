@@ -15,6 +15,7 @@ import datetime as dt
 from matplotlib import colors
 from seaborn import color_palette
 from matplotlib.colors import LinearSegmentedColormap
+import merph
 from merph.utilities.plot_tools import plotTitle
 
 from pvauncertainty.plotting import *
