@@ -10,9 +10,9 @@ from scipy.stats import t
 import pandas as pd
 
 from extra_funs import *
-from merphuncertainty.ph_sampling import *
-from merphuncertainty.plotting import _constrain_cube_for_plot
-from merphuncertainty.cubes import member_prob_cube, get_ppf_cube
+from pvauncertainty.ph_sampling import *
+from pvauncertainty.plotting import _constrain_cube_for_plot
+from pvauncertainty.cubes import member_prob_cube, get_ppf_cube
 
 # cubes_dir = "/user/work/hg20831/postproc-share/quadrature/"
 cubes_dir = "data/name_out_cubes/"
