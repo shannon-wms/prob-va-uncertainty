@@ -1,11 +1,7 @@
-import os
-import sys
 import iris
-import iris.plot as iplt
 from iris.cube import CubeList
 import iris.analysis.maths as maths
 import numpy as np
-import datetime as dt
 from scipy.stats import t
 import pandas as pd
 
@@ -14,7 +10,6 @@ from pvauncertainty.ph_sampling import *
 from pvauncertainty.plotting import _constrain_cube_for_plot
 from pvauncertainty.cubes import member_prob_cube, get_ppf_cube
 
-# cubes_dir = "/user/work/hg20831/postproc-share/quadrature/"
 cubes_dir = "data/name_out_cubes/"
 csv_file = "data/chunks_10_14km.csv"
 fig_dir = "figures/"
