@@ -147,7 +147,6 @@ def plot_excprobs(
     plot_cube(prob_cube, title, levels = levels, ticklabels = ticklabels, 
               colors = colors, save_file = save_file, **kwargs)
 
-# 
 def plot_mult_excprobs(
     probs: Cube | str, 
     workdir: str, 

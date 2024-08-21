@@ -135,7 +135,6 @@ def get_log_cube(cube: Cube):
 
     return log_cube
 
-
 def member_prob_cube(log_cube: Cube, 
                      h_km: float = None, 
                      exceed: bool = True,
@@ -180,7 +179,6 @@ def member_prob_cube(log_cube: Cube,
             
     # Merge list to single cube with threshold coordinate
     return prob_cube_list.merge_cube()
-
 
 def get_prob_cube(dir: str, 
                   h_km: float = None, 
@@ -312,7 +310,6 @@ def get_prob_cube(dir: str,
     if return_cubes:
         return out
 
-
 def avg_prob_cubes(work_dir: str, 
                    esp_csv: str = None,
                    df: int = None, 
@@ -433,7 +430,6 @@ def avg_prob_cubes(work_dir: str,
     else:
         return mean_prob_cube
 
-
 def get_rel_var(prob_cube: Cube, svar_cube: Cube):
     """Compute relative variance (sample variance / square of probability) given exceedance probability estimate cube and sample variance cube.
 
@@ -452,7 +448,6 @@ def get_rel_var(prob_cube: Cube, svar_cube: Cube):
     relvar_cube.attributes["Quantity"] = "Relative Variance"
 
     return relvar_cube
-
 
 def get_ppf_cube(log_cube: Cube, 
                  scale: float, 
@@ -552,7 +547,6 @@ def get_ppf_cube(log_cube: Cube,
     # Return merged cube
     return ppf_cube_list.merge_cube()
 
-
 def get_ci_cube(prob_cube: Cube, svar_cube: Cube, n_samples: int, 
                 alpha: float = 0.05, log: bool = False):
     """Evaluate 100(1-alpha)% confidence intervals for ash concentration exceedance probabilities.
@@ -602,10 +596,6 @@ def get_ci_cube(prob_cube: Cube, svar_cube: Cube, n_samples: int,
 
     return ci_cube
         
-sort_by = {"name": ["Title", "Release height max"], 
-           "split": [True, False], 
-           "split_ind": [-1, 0]}
-
 def sort_cube_list(cube_list: CubeList, 
                    sort_by_height: bool = False, 
                    sort_by_title: bool = False, 
@@ -650,7 +640,6 @@ def sort_cube_list(cube_list: CubeList,
     # Return sorted list
     return CubeList([cube_list[i] for i in list(np.argsort(sort_by))])
     
-
 def update_cube_attrs_from_dict(cube: Cube, attrs: dict):
     """Update attributes of a cube according to dictionary.
 
@@ -665,7 +654,6 @@ def update_cube_attrs_from_dict(cube: Cube, attrs: dict):
     for key, value in attrs.items():
         cube.attributes[key] = value
     return cube
-
 
 def update_cube_attrs_from_data(cube: Cube, esp_data: pd.DataFrame, i: int):
     """Update title, MER and release height attributes of a cube according to dataframe of eruption source parameters.
@@ -684,7 +672,6 @@ def update_cube_attrs_from_data(cube: Cube, esp_data: pd.DataFrame, i: int):
     cube.attributes["Release height max"] = str(esp_data["max (m)"][i]) + " m"
     return cube
     
-
 def construct_new_cube(data: np.ndarray, 
                        cube: Cube,
                        attrs: dict = None,
