@@ -94,7 +94,7 @@ for i in range(n_members):
     left = True if i in [0, 5, 10, 15] else False
     ax = _set_grid(ax, top = top, right = right, bottom = bottom, left = left)
 
-    cf = iplt.contourf(prob_cube, levels = levels, colors = bupu_colors) 
+    cf = iplt.contourf(prob_cube, levels = levels, colors = ylgnbu_colors) 
 
     ax.set_title("Member " + str(i), fontsize = 16)
     print(f"Member {i} done.")

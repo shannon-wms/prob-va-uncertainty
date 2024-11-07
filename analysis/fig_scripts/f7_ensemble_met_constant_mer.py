@@ -67,7 +67,7 @@ for i, cube in enumerate(cube_list):
                     alpha = 0.7)
         if i < n_rows-1:
             # Contours for exceedance probs
-            cf = iplt.contourf(plot_cube, levels = levels, colors = bupu_colors,
+            cf = iplt.contourf(plot_cube, levels = levels, colors = ylgnbu_colors,
                                 extend = "neither") 
             if i == 0:
                 ax.set_title(r"{t}".format(t = int(threshold * 1E+6)) + u" \u03bc"  +r"g m$^{-3}$", fontsize = 16)
@@ -79,7 +79,9 @@ for i, cube in enumerate(cube_list):
                     fontweight = "bold", fontsize = 12)
 
         m += 1
+
     n+= 1
+
 cbaxes1 = fig.add_axes([0.3825, 0.35, 0.25, 0.015])
 cbar1 = plt.colorbar(cf, cax = cbaxes1,
                 orientation = "horizontal",
@@ -87,6 +89,7 @@ cbar1 = plt.colorbar(cf, cax = cbaxes1,
                 fraction = .05, shrink = .9, pad = 0.1)
 cbar1.ax.set_xlabel("Exceedance Probability", fontsize = 14) 
 cbar1.ax.set_xticklabels(ticklabels)
+
 cbaxes2 = fig.add_axes([0.3825, 0.11, 0.25, 0.015])
 cbar2 = plt.colorbar(cf1, cax = cbaxes2,
                 orientation = "horizontal",
@@ -94,6 +97,7 @@ cbar2 = plt.colorbar(cf1, cax = cbaxes2,
                 spacing = "uniform",
                 fraction = .05, shrink = .9, pad = 0.1)
 cbar2.ax.set_xlabel("Population Standard Deviation", fontsize = 14) 
+
 fig.subplots_adjust(wspace = 0.0, hspace = 0.15)
 fig.suptitle(title, y = .97, fontsize = 16)
 

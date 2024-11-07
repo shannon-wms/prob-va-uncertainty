@@ -61,7 +61,7 @@ for row, fl_index in enumerate([2, 4, 6, 8, 10]):
 
         # Plot contours
         cf = iplt.contourf(plot_cube, levels = levels,
-                           colors = bupu_colors) 
+                           colors = ylgnbu_colors) 
 
         # plt.subplots_adjust(wspace = 0, hspace = 0)
         i += 1

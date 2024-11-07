@@ -31,6 +31,10 @@ volcano_height = 1725
 thresholds = [2E-4, 2E-3, 5E-3, 10E-3]
 colours = ['darkorange', 'deeppink', 'blueviolet', 'mediumblue']
 
+ylgnbu_cmap = cm.get_cmap("brewer_YlGnBu_09")
+ylgnbu_colors = [colors.rgb2hex(ylgnbu_cmap(i)) for i in (0, 2, 4, 6, 8)]
+ylgnbu_colors.insert(0, "#ffffff")
+
 import warnings
 warnings.filterwarnings("ignore", category = FutureWarning)
 warnings.filterwarnings("ignore", category = RuntimeWarning)

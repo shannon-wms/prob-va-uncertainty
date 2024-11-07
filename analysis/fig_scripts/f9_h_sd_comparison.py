@@ -9,7 +9,7 @@ time_index = 6
 threshold = 0.0002
 levels = (0, 1E-3, 1E-2, 0.1, 0.25, 0.5, 1)
 ticklabels = (r"$0$", r"$10^{-3}$", r"$10^{-2}$", r"$0.1$", r"$0.25$", r"$0.5$", r"$1$")
-colorscale = bupu_colors
+colorscale = ylgnbu_colors
 n_int = 1
 
 fig = plt.figure(figsize = (20, 17))
