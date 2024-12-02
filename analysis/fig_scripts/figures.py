@@ -23,7 +23,7 @@ from pvauncertainty.ph_sampling import *
 
 cubes_dir = "../data/name_out_cubes/"
 csv_file = "../data/chunks_10_14km.csv"
-fig_dir = "../../figures/"
+fig_dir = "../figures/"
 
 volcano_height = 1725
 
