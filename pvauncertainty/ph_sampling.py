@@ -293,6 +293,58 @@ def reconstruct_cube_from_list(cube_list: CubeList,
     return _rescale_cube_list(cube_list, new_mer_gs_ht, height_diff,
                               new_title)
 
+def alt_reconstruct_cube_from_list(cube_list: CubeList, 
+                                   last_cube: Cube, 
+                                   plume_height: float, 
+                                   new_mer_gs_ht: float = None,
+                                   new_title: str = None):
+    """Given a list of ash concentration cubes for chunks between the vent and a maximum plume height, construct a cube approximating the ash concentration cube given a plume height below the maximum, and corresponding MER.
+
+    Args:
+        cube_list (CubeList): Cube list of separate sources, e.g. output from
+        VolcanicNAME.get_ash_cube_list().
+        plume_height (float): New plume height in m a.s.l. whose resultant ash concentration cube is to be constructed. Must be less than the maximum release height in cube_list.
+        new_mer_gs_ht (float, optional): Mass released in grams per second per 
+        unit height. If None, rescaling is not applied. Defaults to None.
+        new_title (str, optional) . Defaults to None
+
+    Returns:
+        Cube: Ash concentration cube approximating the "true" cube.
+    """
+    # Get each chunk height in m a.s.l.
+    chunk_heights_asl = [float(cube.attributes["Release height max"].split(" ")[0]) 
+                     for cube in cube_list]
+
+    chunk_min_heights = [float(cube.attributes["Release height min"].split(" ")[0]) 
+                     for cube in cube_list]
+
+    if len(chunk_heights_asl) > 1:
+        # Get the relevant chunks based on height
+        these_chunks = [h <= plume_height for h in chunk_heights_asl]
+        
+        # Check whether this new height is included in the topmost chunk
+        try:
+            false_index = these_chunks.index(False)
+            correct_top_chunk = (
+                False if chunk_heights_asl[false_index-1] == plume_height else True)
+        except ValueError:
+            correct_top_chunk = False
+
+        # If so add the next chunk to the list to be rescaled
+        if correct_top_chunk:
+            these_chunks[false_index] = True
+            height_diff = plume_height - chunk_heights_asl[false_index-1]
+        else:
+            height_diff = 0.0
+
+        # Get cube list and rescale according to MER
+        cube_list = CubeList(compress(cube_list, these_chunks))
+    else:
+        height_diff = 0.0
+    
+    return _rescale_cube_list(cube_list, new_mer_gs_ht, height_diff,
+                              new_title)
+
 class SourceChunks(object):
     name: str
 
